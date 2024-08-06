@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  origin: ['http://localhost:5173/', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
     if (req.isAuthenticated()) {
       res.status(200).json({ user: req.user});
     } else {
-      res.status(200).json({ user: null });
+      res.status(200).json({ user: "ayaan" });
     }
   } catch (err) {
     console.error(err);
