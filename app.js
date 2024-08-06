@@ -49,7 +49,7 @@ app.get('/', async (req, res) => {
     if (req.isAuthenticated()) {
       res.status(200).json({ user: req.user});
     } else {
-      res.status(200).json({ user: "ayaan" });
+      res.status(200).json({ user: null });
     }
   } catch (err) {
     console.error(err);
