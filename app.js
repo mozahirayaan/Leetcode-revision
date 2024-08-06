@@ -46,9 +46,13 @@ const isAuthenticated = (req, res, next) => {
 
 app.get('/', async (req, res) => {
   try {
-    // If the middleware passes, req.isAuthenticated() should be true
-    if(req.user){
+    
+    const username = req.user.username;
+    if(username){
       res.status(200).json({ user: req.user });
+    }
+    else{
+      res.status(200).json({ user: null });
     }
   } catch (err) {
     console.error(err);
