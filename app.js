@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: ['http://localhost:5173', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  origin: ['https://leetcode-revisions.vercel.app', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -28,9 +28,6 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
   cookie: { maxAge: 1000 * 60 * 60 * 24 },
-  httpOnly: true,
-  secure: false, // Cookies sent over HTTP for local development
-  sameSite: 'none'
 }));
 
 require('./config/passport-google');
@@ -123,8 +120,8 @@ app.post('/receive-data', async (req, res) => {
 
 app.get('/auth/google', passport.authenticate('google', { scope: ["email", "profile"] }));
 
-app.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173' }), (req, res) => {
-  res.redirect('http://localhost:5173');
+app.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5000' }), (req, res) => {
+  res.redirect('https://leetcode-revisions.vercel.app/');
 });
 
 app.listen(3000, () => {
