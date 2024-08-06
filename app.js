@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: ['http://localhost:5173/', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  origin: ['http://localhost:5173', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
