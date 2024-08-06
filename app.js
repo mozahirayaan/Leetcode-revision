@@ -44,10 +44,12 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-app.get('/', isAuthenticated, async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     // If the middleware passes, req.isAuthenticated() should be true
-    res.status(200).json({ user: req.user });
+    if(req.user){
+      res.status(200).json({ user: req.user });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });
