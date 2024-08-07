@@ -45,7 +45,7 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-app.get('/', async (req, res) => {
+app.get('/api/check-session', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
       res.status(200).json({ user: req.user});
@@ -119,9 +119,9 @@ app.post('/receive-data', async (req, res) => {
 });
 
 
-app.get('/auth/google', passport.authenticate('google', { scope: ["email", "profile"] }));
+app.get('/api/auth/google', passport.authenticate('google', { scope: ["email", "profile"] }));
 
-app.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173' }), (req, res) => {
+app.get('/api/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173' }), (req, res) => {
   res.redirect('http://localhost:5173');
 });
 
