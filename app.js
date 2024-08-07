@@ -44,7 +44,7 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-app.get('/', async (req, res) => {
+app.get('/check-session', async (req, res) => {
   try {
     
     const username = req.user.username;
