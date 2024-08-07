@@ -27,7 +27,10 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 },
+  cookie: { maxAge: 1000 * 60 * 60 * 24 ,
+    httpOnly: false
+
+  },
 }));
 
 require('./config/passport-google');
@@ -47,9 +50,9 @@ const isAuthenticated = (req, res, next) => {
 app.get('/check-session', async (req, res) => {
   try {
     
-    const username = req.user.username;
-    if(username){
-      res.status(200).json({ user: req.user });
+    const user = req.user;
+    if(user){
+      res.status(200).json({ user: user });
     }
     else{
       res.status(200).json({ user: null });
