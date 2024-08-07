@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.set("trust proxy", 1);
+app.set('trust proxy', 1)
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -38,7 +38,7 @@ app.use(passport.session());
 
 // Middleware to check authentication status
 const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (req.session) {
     return next();
   } else {
     res.status(401).json({ message: 'Unauthorized' });
@@ -48,7 +48,7 @@ const isAuthenticated = (req, res, next) => {
 app.get('/api/check-session', async (req, res) => {
   try {
     if (req.isAuthenticated()) {
-      res.status(200).json({ user: req.user});
+      res.status(200).json({ user: req.session});
     } else {
       res.status(200).json({ user: null });
     }
