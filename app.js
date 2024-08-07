@@ -12,6 +12,7 @@ mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
   origin: ['https://leetcode-revisions.vercel.app', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -27,7 +28,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 },
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    secure: true, // Set to true if using HTTPS
+    sameSite: 'None' // Required for cross-site cookies
+  }
 }));
 
 require('./config/passport-google');
