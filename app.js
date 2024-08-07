@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: ['https://leetcode-revisions.vercel.app', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  origin: ['http://localhost:5173', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -21,17 +21,14 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-
+app.set("trust proxy", 1);
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 ,
-    httpOnly: false,
-    sameSite: 'None'
-
-  },
+  proxy: true,
+  cookie: { maxAge: 1000 * 60 * 60 * 24,secure: true, sameSite: "none" }
 }));
 
 require('./config/passport-google');
@@ -48,14 +45,11 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-app.get('/api/check-session', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
-    
-    const user = req.user;
-    if(user){
-      res.status(200).json({ user: user });
-    }
-    else{
+    if (req.isAuthenticated()) {
+      res.status(200).json({ user: req.user});
+    } else {
       res.status(200).json({ user: null });
     }
   } catch (err) {
@@ -63,7 +57,6 @@ app.get('/api/check-session', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 
 app.get('/get-data', isAuthenticated, async (req, res) => {
   try {
@@ -128,8 +121,8 @@ app.post('/receive-data', async (req, res) => {
 
 app.get('/auth/google', passport.authenticate('google', { scope: ["email", "profile"] }));
 
-app.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5000' }), (req, res) => {
-  res.redirect('https://leetcode-revisions.vercel.app/');
+app.get('/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173' }), (req, res) => {
+  res.redirect('http://localhost:5173');
 });
 
 app.listen(3000, () => {
