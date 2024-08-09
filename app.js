@@ -11,10 +11,11 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Allow all origins
-  allowedHeaders: '*', // Allow all headers
-  credentials: true, // Allow cookies to be sent and received
+  origin: ['http://localhost:5173', 'chrome-extension://fghklbodnbneniojeehofjgeeodjebhc'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
+
 
 app.use(cors(corsOptions));
 
@@ -27,8 +28,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  proxy: true,
-  cookie: { maxAge: 1000 * 60 * 60 * 24,path: '/', httpOnly: false, secure: false, sameSite: "none" }
+  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: false }
 }));
 
 require('./config/passport-google');
@@ -38,7 +38,7 @@ app.use(passport.session());
 
 // Middleware to check authentication status
 const isAuthenticated = (req, res, next) => {
-  if (req.session) {
+  if (req.isAuthenticated()) {
     return next();
   } else {
     res.status(401).json({ message: 'Unauthorized' });
