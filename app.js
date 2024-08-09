@@ -24,7 +24,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1)
 
-
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+};
 
 
 
