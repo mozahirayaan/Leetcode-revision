@@ -67,7 +67,7 @@ app.post('/get-data', async (req, res) => {
 
 app.post('/delete-data', isAuthenticated, async (req, res) => {
   try {
-    const username = req.user.username;
+    const username = req.body.username;
     const user = await UserModel.findOne({ username: username });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
