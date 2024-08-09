@@ -23,55 +23,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', 1)
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: false,sameSite: 'None' }
-}));
 
-require('./config/passport-google');
 
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Middleware to check authentication status
-const isAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  } else {
-    res.status(401).json({ message: 'Unauthorized' });
-  }
-};
 
-app.get('/api/check-session', async (req, res) => {
+
+
+app.post('/get-data', async (req, res) => {
   try {
-    if (req.isAuthenticated()) {
-      res.status(200).json({ user: req.session});
-    } else {
-      res.status(200).json({ user: null });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-});
+    const { googleId, username, name } = req.body;
+    let user = await UserModel.findOne({ username: username });
 
-app.get('/get-data', isAuthenticated, async (req, res) => {
-  try {
-    const username = req.user.username;
-    const user = await UserModel.findOne({ username: username });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      const newUser = new UserModel({
+        googleid: googleId,
+        username: username,
+        name: name,
+        questions: [
+          {
+            url: "House-robber",
+            category: "aa",
+            notes: "jj"
+          }
+        ]
+      });
+      user = await newUser.save();
     }
-    const data = user.questions;
+
+    const data = user.questions || []; // Ensure `questions` is an array
     res.status(200).json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
 
 app.post('/delete-data', isAuthenticated, async (req, res) => {
   try {
