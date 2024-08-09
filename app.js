@@ -11,8 +11,7 @@ const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGODB_URL);
 
 const corsOptions = {
-  origin: '*', // Allow all origins
-  methods: '*', // Allow all methods
+  origin: 'http://localhost:5173', // Allow all origins
   allowedHeaders: '*', // Allow all headers
   credentials: true, // Allow cookies to be sent and received
 };
