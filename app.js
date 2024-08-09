@@ -28,7 +28,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL, collectionName: "sessions" }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: false }
+  cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: false,sameSite: 'None' }
 }));
 
 require('./config/passport-google');
