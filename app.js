@@ -77,7 +77,7 @@ app.post('/delete-data', async (req, res) => {
 });
 
 app.post('/receive-data', async (req, res) => {
-  const { url, category, notes, email } = req.body;
+  const { url, category, notes, email,name, googleId } = req.body;
   console.log('Received data:', { url, category, notes, email });
 
   try {
@@ -85,8 +85,8 @@ app.post('/receive-data', async (req, res) => {
 
     if (!user) {
       const newUser = new UserModel({
-        googleid: googleId,
-        username: username,
+        googleid: googleID,
+        username: email,
         name: name,
         questions: []
       });
