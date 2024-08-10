@@ -85,7 +85,7 @@ app.post('/receive-data', async (req, res) => {
 
     if (!user) {
       const newUser = new UserModel({
-        googleid: googleID,
+        googleid: googleId,
         username: email,
         name: name,
         questions: []
