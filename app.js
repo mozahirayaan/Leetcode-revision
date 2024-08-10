@@ -45,13 +45,7 @@ app.post('/get-data', async (req, res) => {
         googleid: googleId,
         username: username,
         name: name,
-        questions: [
-          {
-            url: "House-robber",
-            category: "aa",
-            notes: "jj"
-          }
-        ]
+        questions: []
       });
       user = await newUser.save();
     }
@@ -87,10 +81,16 @@ app.post('/receive-data', async (req, res) => {
   console.log('Received data:', { url, category, notes, email });
 
   try {
-    const user = await UserModel.findOne({ username: email });
+    let user = await UserModel.findOne({ username: email });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      const newUser = new UserModel({
+        googleid: googleId,
+        username: username,
+        name: name,
+        questions: []
+      });
+      user = await newUser.save();
     }
 
     // Remove existing question with the same URL if it exists
